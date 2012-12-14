@@ -10,8 +10,8 @@ from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization, ReadOnlyAuthorization, DjangoAuthorization
 
 # These are based on the tastypie fork
-from tastypie.models import ApiToken
-from tastypie.authentication import ApiTokenAuthentication
+from tastypie.models import ApiKey
+from tastypie.authentication import ApiKeyAuthentication
 
 import tastypie_ext.settings as settings 
 from tastypie_ext.authentication import *
@@ -31,7 +31,7 @@ class UserResource(ModelResource):
         fields = settings.TASTYPIE_EXT_USERRESOURCE_FIELDS
         allowed_methods = ['get']
         
-        authentication = ApiTokenAuthentication()
+        authentication = ApiKeyAuthentication()
         authorization = ReadOnlyAuthorization()
         
         
@@ -46,19 +46,19 @@ class SessionResource(ModelResource):
         'tastypie_ext.resources.UserResource', 'user', full=True)
 
     class Meta(object):
-        queryset = ApiToken.objects.all()
+        queryset = ApiKey.objects.all()
         resource_name = 'sessions'
         fields = ['user', 'token']
         allowed_methods = ['get', 'delete']
         authorization = Authorization()
-        authentication = ApiTokenAuthentication()
+        authentication = ApiKeyAuthentication()
         always_return_data = True
         
         
 class POSTAPITokenAuthenticationResource(ModelResource):
     """
     HTTP POST-based authentication end point
-    for use with the ApiTokenAuthentication 
+    for use with the ApiKeyAuthentication 
     flow.
     
     """
@@ -67,7 +67,7 @@ class POSTAPITokenAuthenticationResource(ModelResource):
         'tastypie_ext.resources.UserResource', 'user', full=True)
 
     class Meta(object):
-        queryset = ApiToken.objects.all()
+        queryset = ApiKey.objects.all()
         resource_name = 'authenticate'
         fields = ['user', 'token']
         allowed_methods = ['post']
@@ -77,7 +77,7 @@ class POSTAPITokenAuthenticationResource(ModelResource):
 
     def obj_create(self, bundle, request=None, **kwargs):
         " Create a new token for the session."
-        bundle.obj = ApiToken.objects.create(user=request.user)
+        bundle.obj = ApiKey.objects.create(user=request.user)
         return bundle
 
     def dehydrate_resource_uri(self, bundle):
@@ -88,7 +88,7 @@ class POSTAPITokenAuthenticationResource(ModelResource):
 class GETAPITokenAuthenticationResource(ModelResource):
     """
     HTTP GET-based authentication end point
-    for use with the ApiTokenAuthentication
+    for use with the ApiKeyAuthentication
     flow. This allows to use this with cross-domain
     AJAX (e.g JSONP).
     
@@ -98,7 +98,7 @@ class GETAPITokenAuthenticationResource(ModelResource):
         'tastypie_ext.resources.UserResource', 'user', full=True)
     
     class Meta(object):
-        queryset = ApiToken.objects.all()
+        queryset = ApiKey.objects.all()
         resource_name = 'authenticate'
         fields = ['user', 'token']
         allowed_methods = ['get']
@@ -133,7 +133,7 @@ class GETAPITokenAuthenticationResource(ModelResource):
         
     def obj_create(self, bundle, request=None, **kwargs):
         """Create a new token for the session"""
-        bundle.obj = ApiToken.objects.create(user=request.user)
+        bundle.obj = ApiKey.objects.create(user=request.user)
         return bundle
     
     def obj_get(self, request=None, **kwargs):
@@ -168,7 +168,7 @@ class GETAPIFacebookTokenAuthenticationResource(GETAPITokenAuthenticationResourc
     """
 
     class Meta(object):
-        queryset = ApiToken.objects.all()
+        queryset = ApiKey.objects.all()
         resource_name = 'fb_authenticate'
         fields = ['user', 'token']
         allowed_methods = ['get']
