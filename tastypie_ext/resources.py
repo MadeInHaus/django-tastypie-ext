@@ -141,8 +141,8 @@ class GETAPIKeyAuthenticationResource(ModelResource):
 #    def obj_get(self, request=None, **kwargs):
 #        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
     
-    def obj_get_list(self, request=None, **kwargs):
-        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
+#    def obj_get_list(self, request=None, **kwargs):
+#        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
         
 class GETAPIFacebookKeyAuthenticationResource(GETAPIKeyAuthenticationResource):
