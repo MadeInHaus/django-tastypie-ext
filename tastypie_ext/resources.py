@@ -55,7 +55,7 @@ class SessionResource(ModelResource):
         always_return_data = True
         
         
-class POSTAPITokenAuthenticationResource(ModelResource):
+class POSTAPIKeyAuthenticationResource(ModelResource):
     """
     HTTP POST-based authentication end point
     for use with the ApiKeyAuthentication 
@@ -85,7 +85,7 @@ class POSTAPITokenAuthenticationResource(ModelResource):
 
 
 
-class GETAPITokenAuthenticationResource(ModelResource):
+class GETAPIKeyAuthenticationResource(ModelResource):
     """
     HTTP GET-based authentication end point
     for use with the ApiKeyAuthentication
@@ -116,7 +116,7 @@ class GETAPITokenAuthenticationResource(ModelResource):
             ]
   
     def _create_token(self, request, **kwargs):
-        """Validate using BasicAuthentication, and create Api Token
+        """Validate using BasicAuthentication, and create Api Key
         if authenticated"""
         print request
         self.method_check(request, allowed=['get'])
@@ -143,7 +143,7 @@ class GETAPITokenAuthenticationResource(ModelResource):
         raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
         
-class GETAPIFacebookTokenAuthenticationResource(GETAPITokenAuthenticationResource):
+class GETAPIFacebookKeyAuthenticationResource(GETAPIKeyAuthenticationResource):
     """
     Uses Django-facebook to perform OAuth 2.0 authentication with facebook,
     and, if successful, issue own api session token.
