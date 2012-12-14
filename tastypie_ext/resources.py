@@ -1,3 +1,5 @@
+import sys
+
 from django.contrib.auth.models import User          
 from django.conf.urls.defaults import url
 
@@ -118,7 +120,7 @@ class GETAPIKeyAuthenticationResource(ModelResource):
     def _create_token(self, request, **kwargs):
         """Validate using BasicAuthentication, and create Api Key
         if authenticated"""
-        print request
+        print >> sys.stderr, request
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
         self.throttle_check(request)
