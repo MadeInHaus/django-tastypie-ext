@@ -16,7 +16,7 @@ from tastypie.models import ApiKey
 from tastypie.authentication import ApiKeyAuthentication
 
 import tastypie_ext.settings as settings 
-from tastypie_ext.authentication import *
+from tastypie_ext.authentication import FacebookOAUTH2Authentication
 
 class UserResource(ModelResource):
     """
@@ -50,7 +50,7 @@ class SessionResource(ModelResource):
     class Meta(object):
         queryset = ApiKey.objects.all()
         resource_name = 'sessions'
-        fields = ['user', 'token']
+        fields = ['user', 'key']
         allowed_methods = ['get', 'delete']
         authorization = Authorization()
         authentication = ApiKeyAuthentication()
@@ -71,15 +71,15 @@ class POSTAPIKeyAuthenticationResource(ModelResource):
     class Meta(object):
         queryset = ApiKey.objects.all()
         resource_name = 'authenticate'
-        fields = ['user', 'token']
+        fields = ['user', 'key']
         allowed_methods = ['post']
         authorization = Authorization()
         authentication = BasicAuthentication()
         always_return_data = True
 
     def obj_create(self, bundle, request=None, **kwargs):
-        " Create a new token for the session."
-        bundle.obj = ApiKey.objects.create(user=request.user)
+        "Get or Create a new key for the session."
+        bundle.obj, _created = ApiKey.objects.get_or_create(user=request.user)
         return bundle
 
     def dehydrate_resource_uri(self, bundle):
@@ -102,25 +102,25 @@ class GETAPIKeyAuthenticationResource(ModelResource):
     class Meta(object):
         queryset = ApiKey.objects.all()
         resource_name = 'authenticate'
-        fields = ['user', 'token']
+        fields = ['user', 'key']
         allowed_methods = ['get']
         authorization = Authorization()
         authentication = BasicAuthentication()
         
-    def prepend_urls(self):
+    def override_urls(self):
         """We override this to change default behavior
-        for the API when using GET to actually "create" a resource,
-        in this case a new session/token."""
+        for the API when using GET to actually "get or create" a resource,
+        in this case a new session/key."""
         
         return [
             url(r"^(?P<resource_name>%s)%s$" % (self._meta.resource_name, trailing_slash()), 
-                self.wrap_view('_create_token'), name="api_get_token"),
+                self.wrap_view('_create_key'), name="api_get_key"),
             ]
   
-    def _create_token(self, request, **kwargs):
-        """Validate using BasicAuthentication, and create Api Key
+    def _create_key(self, request, **kwargs):
+        """Validate using BasicAuthentication, and get or create Api Key
         if authenticated"""
-        print >> sys.stderr, request
+
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
         self.throttle_check(request)
@@ -134,32 +134,32 @@ class GETAPIKeyAuthenticationResource(ModelResource):
     
         
     def obj_create(self, bundle, request=None, **kwargs):
-        """Create a new token for the session"""
-        bundle.obj = ApiKey.objects.create(user=request.user)
+        """Get or Create a new key for the session"""
+        bundle.obj, _created = ApiKey.objects.get_or_create(user=request.user)
         return bundle
     
-#    def obj_get(self, request=None, **kwargs):
-#        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
+    def obj_get(self, request=None, **kwargs):
+        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
     
-#    def obj_get_list(self, request=None, **kwargs):
-#        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
+    def obj_get_list(self, request=None, **kwargs):
+        raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
         
 class GETAPIFacebookKeyAuthenticationResource(GETAPIKeyAuthenticationResource):
     """
     Uses Django-facebook to perform OAuth 2.0 authentication with facebook,
-    and, if successful, issue own api session token.
+    and, if successful, issue own api session key.
     
     Typical use case is with a mobile client e.g:
-    1. Mobile client app performs facebook authentication, gets token from fb
-    2. Mobile client app hits this authentication url with the fb token
-    3. API backend (this resource) validates the facebook token server-side
+    1. Mobile client app performs facebook authentication, gets key from fb
+    2. Mobile client app hits this authentication url with the fb key
+    3. API backend (this resource) validates the facebook key server-side
     4. if successful, API backend (this resource) authenticates user and
-       returns own token for use in rest of session, as well storing
-       the fb token as needed for further actions
+       returns own key for use in rest of session, as well storing
+       the fb key as needed for further actions
       
        
-    * It is required that the user's email be available, e.g the access token
+    * It is required that the user's email be available, e.g the access key
       that is generated should have the 'email' access permission. See Facebook's
       Graph API documentation for more information.
        
@@ -172,7 +172,7 @@ class GETAPIFacebookKeyAuthenticationResource(GETAPIKeyAuthenticationResource):
     class Meta(object):
         queryset = ApiKey.objects.all()
         resource_name = 'fb_authenticate'
-        fields = ['user', 'token']
+        fields = ['user', 'key']
         allowed_methods = ['get']
         authorization = Authorization()
         authentication = FacebookOAUTH2Authentication()
