@@ -145,7 +145,7 @@ class GETAPIKeyAuthenticationResource(ModelResource):
         raise ImmediateHttpResponse(response=http.HttpUnauthorized())
 
         
-class GETAPIFacebookKeyAuthenticationResource(GETAPIKeyAuthenticationResource):
+class GETAPIFacebookTokenAuthenticationResource(GETAPIKeyAuthenticationResource):
     """
     Uses Django-facebook to perform OAuth 2.0 authentication with facebook,
     and, if successful, issue own api session key.
