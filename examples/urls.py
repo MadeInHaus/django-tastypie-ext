@@ -31,7 +31,7 @@ Can now be used, e.g:
 http://mysite.com/api/v1/fb_authenticate?access_token=<FB_ACCESS_TOKEN>
 
 If token is valid, this will create and/or login the application user and
-return a valid token to be used with subsequent Resources using the ApiKeyAuthentication 
+return a valid ApiKey to be used with subsequent Resources using the ApiKeyAuthentication 
 authentication backend. 
 """
 
