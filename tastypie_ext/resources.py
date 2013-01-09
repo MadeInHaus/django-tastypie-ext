@@ -131,7 +131,7 @@ class GETAPIKeyAuthenticationResource(ModelResource):
 
 	#changing name for consistency with TastyPie 'api_key' params
 	bundle.data['api_key'] = bundle.data['key']
-	del bunfle.data['key']
+	del bundle.data['key']
 
         self.log_throttled_access(request)
         return self.create_response(request, bundle.data)
