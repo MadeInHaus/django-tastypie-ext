@@ -129,6 +129,10 @@ class GETAPIKeyAuthenticationResource(ModelResource):
         bundle = self.obj_create(bundle, request, **kwargs)
         bundle = self.full_dehydrate(bundle)
 
+	#changing name for consistency with TastyPie 'api_key' params
+	bundle.data['api_key'] = bundle.data['key']
+	del bunfle.data['key']
+
         self.log_throttled_access(request)
         return self.create_response(request, bundle.data)
     
