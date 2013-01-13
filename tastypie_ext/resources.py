@@ -75,6 +75,7 @@ class POSTAPIKeyAuthenticationResource(ModelResource):
         allowed_methods = ['post']
         authorization = Authorization()
         authentication = BasicAuthentication()
+        include_resource_uri = False
         always_return_data = True
 
     def obj_create(self, bundle, request=None, **kwargs):
