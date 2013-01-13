@@ -105,6 +105,7 @@ class GETAPIKeyAuthenticationResource(ModelResource):
         resource_name = 'authenticate'
         fields = ['user', 'key']
         allowed_methods = ['get']
+        include_resource_uri = False        
         authorization = Authorization()
         authentication = BasicAuthentication()
         
@@ -178,6 +179,7 @@ class GETAPIFacebookTokenAuthenticationResource(GETAPIKeyAuthenticationResource)
         queryset = ApiKey.objects.all()
         resource_name = 'fb_authenticate'
         fields = ['user', 'key']
+        include_resource_uri = False        
         allowed_methods = ['get']
         authorization = Authorization()
         authentication = FacebookOAUTH2Authentication()
