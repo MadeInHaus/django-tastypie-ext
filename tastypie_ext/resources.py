@@ -32,7 +32,7 @@ class UserResource(ModelResource):
         
         fields = settings.TASTYPIE_EXT_USERRESOURCE_FIELDS
         allowed_methods = ['get']
-        
+        include_resource_uri = False        
         authentication = ApiKeyAuthentication()
         authorization = ReadOnlyAuthorization()
         
