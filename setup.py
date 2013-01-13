@@ -4,7 +4,7 @@ from setuptools import setup
 if __name__ == '__main__':
     setup(
         name = 'django-tastypie-ext',
-        version = '0.1.1',
+        version = '0.1.2',
         description = "Various tastypie extensions, authentication methods, etc.",
         long_description = open('README.rst', 'r').read(),
         author = 'Adam Ever-Hadani',
